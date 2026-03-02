@@ -41,6 +41,9 @@ st.markdown("---")
 # Select Scenario
 st.markdown("### 📊 Select Scenario for Report")
 
+selected_scenario = None
+selected_scenario_idx = None
+
 if st.session_state.scenarios:
     scenario_names = [s.name for s in st.session_state.scenarios]
     selected_scenario_idx = st.selectbox(
@@ -121,8 +124,6 @@ One-page summary including:
                 "electricity_kwh_day": results.electricity_kwh_day,
                 "co2_intensity_kg_per_kg_nh3": results.co2_intensity_kg_per_kg_nh3,
             }
-            
-            selected_scenario = st.session_state.scenarios[selected_scenario_idx] if st.session_state.scenarios else None
             
             if selected_scenario:
                 pdf_buffer = generate_pdf_report(
