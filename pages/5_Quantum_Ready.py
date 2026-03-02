@@ -116,8 +116,7 @@ st.markdown("---")
 st.markdown("### 🔌 How to Integrate with Real Quantum")
 
 with st.expander("📖 Integration Code Example"):
-    st.markdown("""
-```python
+    st.code("""
 # Future: Replace quantum_stub with IBM Quantum
 
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
@@ -150,8 +149,7 @@ def quantum_chemistry_solver(catalyst_smiles: str):
 from core.quantum_stub import get_scorer
 scorer = get_scorer()
 score = scorer.score_catalyst({"name": "Ruthenium-Carbon", ...})
-```
-    """)
+    """, language="python")
 
 st.markdown("---")
 
