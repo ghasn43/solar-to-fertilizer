@@ -43,31 +43,54 @@
 
 ### Windows Setup
 
+#### Quick Setup (Automated)
+1. **Double-click `setup.bat`** in the project root
+2. Wait for installation to complete
+3. Run: `streamlit run app.py`
+
+#### Manual Setup
 1. **Clone or download the repository:**
    ```powershell
    cd d:\Solar-to-Fertiliser\s2f_dt
    ```
 
-2. **Create a virtual environment** (recommended):
+2. **Create a virtual environment:**
    ```powershell
    python -m venv venv
    venv\Scripts\Activate.ps1
    ```
 
-3. **Install dependencies:**
+3. **Upgrade pip:**
    ```powershell
-   pip install -r requirements.txt
+   python -m pip install --upgrade pip
    ```
 
-4. **Run the application:**
+4. **Install dependencies:**
+   ```powershell
+   pip install --no-cache-dir -r requirements.txt
+   ```
+
+5. **Run the application:**
    ```powershell
    streamlit run app.py
    ```
 
    Your default browser will open to `http://localhost:8501`
 
+**Having issues?** See [SETUP.md](SETUP.md) for troubleshooting.
+
 ### macOS Setup
 
+#### Quick Setup (Automated)
+1. **Run the setup script** in Terminal:
+   ```bash
+   chmod +x setup.sh
+   ./setup.sh
+   ```
+2. Wait for installation to complete
+3. Run: `streamlit run app.py`
+
+#### Manual Setup
 1. **Clone or download the repository:**
    ```bash
    cd ~/Solar-to-Fertiliser/s2f_dt
@@ -79,15 +102,22 @@
    source venv/bin/activate
    ```
 
-3. **Install dependencies:**
+3. **Upgrade pip:**
    ```bash
-   pip install -r requirements.txt
+   python -m pip install --upgrade pip
    ```
 
-4. **Run the application:**
+4. **Install dependencies:**
+   ```bash
+   pip install --no-cache-dir -r requirements.txt
+   ```
+
+5. **Run the application:**
    ```bash
    streamlit run app.py
    ```
+
+**Having issues?** See [SETUP.md](SETUP.md) for troubleshooting.
 
 ### Linux Setup (Ubuntu/Debian)
 
@@ -179,9 +209,52 @@ s2f_dt/
     └── logo_placeholder.txt       # Branding placeholder
 ```
 
----
+## Troubleshooting
 
-## Page Descriptions
+### Installation Issues
+
+If you encounter `pip install` errors, try these solutions in order:
+
+1. **Upgrade pip first:**
+   ```bash
+   python -m pip install --upgrade pip
+   ```
+
+2. **Use `--no-cache-dir` flag:**
+   ```bash
+   pip install --no-cache-dir -r requirements.txt
+   ```
+
+3. **Install minimal version** (core features only):
+   ```bash
+   pip install -r requirements_minimal.txt
+   ```
+
+4. **Install packages individually** (if bulk fails):
+   ```bash
+   pip install streamlit pandas numpy matplotlib
+   ```
+
+5. **Check for virtual environment:**
+   - Windows: `where python` should show `venv\Scripts\python.exe`
+   - macOS/Linux: `which python` should show path containing `venv`
+
+### Common Errors
+
+| Error | Solution |
+|-------|----------|
+| `No module named 'venv'` | Use `python3 -m venv venv` with explicit python3 |
+| `pip is not recognized` | Use `python -m pip install ...` instead |
+| `reportlab build error` | `pip install --only-binary :all: reportlab` |
+| `Microsoft C++ required` | Install Visual C++ Build Tools or relax version pins |
+| `SSL certificate error` | Update cert: `pip install --upgrade certifi` |
+
+### Getting Help
+
+1. **See [SETUP.md](SETUP.md)** for detailed installation guide
+2. **Check Python version:** `python --version` (should be 3.11+)
+3. **Verify pip:** `pip --version`
+4. **List installed packages:** `pip list`
 
 ### 1️⃣ Overview (`1_Overview.py`)
 **Purpose**: Executive summary and assumptions.
