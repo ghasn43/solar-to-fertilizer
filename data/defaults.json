@@ -1,0 +1,12 @@
+{
+  "target_nh3_day": 5.0,
+  "solar_capacity_mw": 50.0,
+  "electrolyser_efficiency": 45.0,
+  "n2_separation_energy": 0.5,
+  "synthesis_energy": 8.0,
+  "catalyst_factor": 1.0,
+  "capacity_factor": 0.25,
+  "water_cost_usd_m3": 1.5,
+  "electricity_cost_usd_kwh": 0.04,
+  "include_urea": false
+}
