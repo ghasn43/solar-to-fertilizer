@@ -161,7 +161,7 @@ For **1 ton of NH₃ produced**:
 - **Grid (UAE)**: 0.48 kg CO₂/kWh (gas + solar mix)
 
 #### Capacity & Availability
-- **Solar Capacity Factor**: {} (25% annual average for UAE)
+- **Solar Capacity Factor**: {config_dict['capacity_factor']:.2%} (25% annual average for UAE)
 - **Daily Effective Output**: Solar MW × 24h × Capacity Factor
 
 #### Assumptions & Caveats
@@ -169,9 +169,7 @@ For **1 ton of NH₃ produced**:
 - ✓ Pressure & temperature optimized for Haber-Bosch
 - ✓ Catalyst efficiency modeled as multiplier
 - ✓ Linear cost model (reality: economy of scale)
-        """.format(
-            f"{config_dict['capacity_factor']:.2%}"
-        ))
+        """)
 
 st.markdown("---")
 
