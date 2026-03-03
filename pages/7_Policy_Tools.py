@@ -2,6 +2,7 @@
 Page 7: Policy Tools
 Sensitivity analysis, break-even calculator, regional scaling, national goals
 for policy makers and government stakeholders
+Phase 4: Production Ready - Added error handling, performance monitoring, accessibility
 """
 import streamlit as st
 import pandas as pd
@@ -11,6 +12,11 @@ import plotly.express as px
 from core.constants import COMPANY_NAME, COMPANY_LOCATION, IP_NOTICE
 from core.models import ProcessConfig
 from core.process import process_model
+from core.production_utils import (
+    safe_execute,
+    show_error_message,
+    PerformanceMonitor
+)
 
 st.set_page_config(page_title="7. Policy Tools | S2F-DT", layout="wide")
 
@@ -42,36 +48,45 @@ config_dict = st.session_state.process_config
 
 def calculate_ammonia_economics(config_dict, electricity_cost=None, water_cost=None, 
                                 carbon_tax=None, subsidy=None):
-    """Calculate cost and emissions for given configuration."""
+    """Calculate cost and emissions for given configuration with error handling."""
     config = config_dict.copy()
     if electricity_cost is not None:
         config["electricity_cost_usd_kwh"] = electricity_cost
     if water_cost is not None:
         config["water_cost_usd_m3"] = water_cost
     
-    # Create ProcessConfig object
-    process_config = ProcessConfig(**config)
-    results = process_model(process_config)
+    # Create ProcessConfig object with error handling
+    def _calculate():
+        process_config = ProcessConfig(**config)
+        results = process_model(process_config)
+        
+        cost = results.cost_usd_per_ton_nh3
+        co2 = results.co2_intensity_kg_per_kg_nh3 * 1000  # Convert kg/kg to kg/ton
+        
+        # Apply carbon tax if specified
+        if carbon_tax is not None:
+            cost_from_carbon = co2 * carbon_tax / 1000
+            cost += cost_from_carbon
+        
+        # Apply subsidy if specified
+        if subsidy is not None:
+            cost -= subsidy
+        
+        return {
+            "cost_usd_per_ton": cost,
+            "co2_kg_per_ton": co2,
+            "energy_mwh_day": results.electricity_kwh_day / 1000,
+            "water_m3_day": results.water_m3_day,
+            "co2_metric_tons_year": (co2 / 1000) * config_dict["target_nh3_day"] * 365,
+        }
     
-    cost = results.cost_usd_per_ton_nh3
-    co2 = results.co2_intensity_kg_per_kg_nh3 * 1000  # Convert kg/kg to kg/ton
+    with PerformanceMonitor("ammonia_economics"):
+        result, error = safe_execute(_calculate)
+        if error:
+            show_error_message(f"❌ Calculation error: {error}")
+            return None
     
-    # Apply carbon tax if specified (adds cost per ton)
-    if carbon_tax is not None:
-        cost_from_carbon = co2 * carbon_tax / 1000  # co2 is in kg/ton, convert to cost
-        cost += cost_from_carbon
-    
-    # Apply subsidy if specified (reduces cost)
-    if subsidy is not None:
-        cost -= subsidy
-    
-    return {
-        "cost_usd_per_ton": cost,
-        "co2_kg_per_ton": co2,
-        "energy_mwh_day": results.electricity_kwh_day / 1000,
-        "water_m3_day": results.water_m3_day,
-        "co2_metric_tons_year": (co2 / 1000) * config_dict["target_nh3_day"] * 365,
-    }
+    return result
 
 # Regional data for UAE
 EMIRATES_DATA = {
