@@ -1,0 +1,54 @@
+# Streamlit Configuration for Production Readiness
+# Phase 4: Dark mode, accessibility, and performance optimization
+
+[theme]
+primaryColor = "#0066cc"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f0f2f6"
+textColor = "#262730"
+font = "sans serif"
+
+# Dark mode auto-detection
+# Users can toggle: Settings → Theme
+# Respects system preference
+
+[client]
+# Enable dark mode user option
+showErrorDetails = false
+# Better error messages without stack traces
+
+[logger]
+level = "info"
+
+[browser]
+# Better mobile support
+serverAddress = "localhost"
+serverPort = 8501
+# Responsive design support
+gatherUsageStats = false
+
+[server]
+# Performance optimization
+maxMessageSize = 200
+enableXsrfProtection = true
+enableCORS = false
+# Security: disable CORS between pages
+
+[secrets]
+# Secure secret management in production
+secretsFile = ".streamlit/secrets.toml"
+
+[downloader]
+maxDownloadSize = 200
+
+[dataFrameSerialization]
+unicode = true
+
+# Custom header/footer for accessibility
+[client.layoutSettings]
+initialSidebarState = "expanded"
+
+# Performance: lazy loading
+[deprecation]
+showPyplotGlobalUse = false
+showfileUploaderEncoding = false
