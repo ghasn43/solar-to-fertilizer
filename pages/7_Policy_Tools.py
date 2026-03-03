@@ -49,13 +49,16 @@ def calculate_ammonia_economics(config_dict, electricity_cost=None, water_cost=N
     if water_cost is not None:
         config["water_cost_usd_m3"] = water_cost
     
-    results = process_model(**config)
-    cost = results["cost_usd_per_ton"]
-    co2 = results["co2_kg_per_ton"]
+    # Create ProcessConfig object
+    process_config = ProcessConfig(**config)
+    results = process_model(process_config)
+    
+    cost = results.cost_usd_per_ton_nh3
+    co2 = results.co2_intensity_kg_per_kg_nh3 * 1000  # Convert kg/kg to kg/ton
     
     # Apply carbon tax if specified (adds cost per ton)
     if carbon_tax is not None:
-        cost_from_carbon = (co2 / 1000) * carbon_tax  # carbon_tax is per kg, convert to per ton
+        cost_from_carbon = co2 * carbon_tax / 1000  # co2 is in kg/ton, convert to cost
         cost += cost_from_carbon
     
     # Apply subsidy if specified (reduces cost)
@@ -65,8 +68,8 @@ def calculate_ammonia_economics(config_dict, electricity_cost=None, water_cost=N
     return {
         "cost_usd_per_ton": cost,
         "co2_kg_per_ton": co2,
-        "energy_mwh_day": results["energy_mwh_day"],
-        "water_m3_day": results["water_m3_day"],
+        "energy_mwh_day": results.electricity_kwh_day / 1000,
+        "water_m3_day": results.water_m3_day,
         "co2_metric_tons_year": (co2 / 1000) * config_dict["target_nh3_day"] * 365,
     }
 
