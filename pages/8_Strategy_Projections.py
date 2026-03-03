@@ -86,12 +86,12 @@ def generate_cabinet_briefing_pdf(scenario_name, scenario_data, reference_cost):
     # Key metrics
     metrics_data = [
         ["Metric", "Value", "vs Import Baseline"],
-        ["**Cost per Ton**", f"${scenario_data['cost_usd_per_ton']:.0f}", 
-         f"{scenario_data['cost_usd_per_ton'] - reference_cost:+.0f}"],
-        ["**CO₂ Intensity**", f"{scenario_data['co2_kg_per_ton']:.0f} kg/ton", 
-         f"{scenario_data['co2_kg_per_ton'] - 2000:+.0f} kg/ton"],
-        ["**Daily Energy**", f"{scenario_data['energy_mwh_day']:.0f} MWh/day", "—"],
-        ["**Water Usage**", f"{scenario_data['water_m3_day']:.0f} m³/day", "—"],
+        ["**Cost per Ton**", f"${scenario_data['cost_with_policy']:.0f}", 
+         f"{scenario_data['cost_with_policy'] - reference_cost:+.0f}"],
+        ["**CO₂ Intensity**", f"{scenario_data['co2']:.0f} kg/ton", 
+         f"{scenario_data['co2'] - 2000:+.0f} kg/ton"],
+        ["**Daily Energy**", f"{scenario_data['energy']:.0f} MWh/day", "—"],
+        ["**Water Usage**", f"{scenario_data['water']:.0f} m³/day", "—"],
     ]
     
     metrics_table = Table(metrics_data, colWidths=[2*inch, 2*inch, 2.5*inch])
@@ -113,18 +113,18 @@ def generate_cabinet_briefing_pdf(scenario_name, scenario_data, reference_cost):
     # Strategic implications
     story.append(Paragraph("<b>Strategic Implications</b>", styles['Heading2']))
     
-    if scenario_data['cost_usd_per_ton'] < 350:
+    if scenario_data['cost_with_policy'] < 350:
         viability = "✓ <b>Excellent cost-competitiveness:</b> Undercuts import baseline. Attractive for investors."
-    elif scenario_data['cost_usd_per_ton'] < 400:
+    elif scenario_data['cost_with_policy'] < 400:
         viability = "✓ <b>Good cost-competitiveness:</b> Competitive with imports. Minor subsidy may be needed."
     else:
         viability = "⚠ <b>Subsidy-dependent:</b> Requires government support to achieve cost parity."
     
     story.append(Paragraph(viability, styles['Normal']))
     
-    if scenario_data['co2_kg_per_ton'] < 100:
+    if scenario_data['co2'] < 100:
         climate = "✓ <b>Ultra-low carbon:</b> Aligns strongly with UAE Net Zero 2050 commitment."
-    elif scenario_data['co2_kg_per_ton'] < 500:
+    elif scenario_data['co2'] < 500:
         climate = "✓ <b>Significant carbon reduction:</b> 95%+ cleaner than imported ammonia."
     else:
         climate = "~ <b>Moderate decarbonization:</b> Some carbon savings, but still requires grid electricity."
